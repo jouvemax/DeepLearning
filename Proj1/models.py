@@ -22,3 +22,14 @@ class BaselineNetwork(nn.Module):
         return x
 
 
+class BaselineNetwork2(nn.Module):
+    def __init__(self):
+        super(BaselineNetwork2, self).__init__()
+        self.fc1 = nn.Linear(2 * 14 * 14, 2)
+
+    def forward(self, x):
+        x = torch.flatten(x, 1)
+        x = self.fc1(x)
+        return x
+
+

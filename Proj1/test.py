@@ -29,7 +29,7 @@ def test(test_input, test_target, test_classes, model, criterion):
                 #print_test(batch_idx, len(val_loader), batch_time, losses, top1, persistent=False, color=color, title=title)
 
         accuracy = 1 - (nb_data_errors / test_input.size(0))
-        print("Accuracy: " + repr(accuracy * 100) + "%" + " - Loss: " + loss_sum)
+        print("Accuracy: " + repr(accuracy * 100) + "%" + " - Loss: " + repr(loss_sum))
 
 
 if __name__ == '__main__':
