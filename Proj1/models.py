@@ -33,3 +33,39 @@ class BaselineNetwork2(nn.Module):
         return x
 
 
+class SiameseNetwork(nn.Module):
+    def __init__(self):
+        super(SiameseNetwork, self).__init__()
+        self.conv1 = nn.Conv2d(1, 16 * 1, 2, 1)  # 2 input channels (one for each digit image), each is 14 x 14
+        self.conv2 = nn.Conv2d(16 * 1, 32 * 1, 2, 1)  # 32 input channels, each is 13 x 13
+        self.fc1 = nn.Linear(32 * 1 * 12 * 12, 64)
+        self.fc2 = nn.Linear(64, 10)
+        self.fc3 = nn.Linear(10 * 2, 2, bias=False)
+
+    def forward(self, x):
+        x1 = x[:, 0:1, :, :]
+        x2 = x[:, 1:2, :, :]
+
+        x1 = self.conv1(x1)
+        x1 = F.relu(x1)
+        x1 = self.conv2(x1)
+        x1 = torch.flatten(x1, 1)
+        x1 = self.fc1(x1)
+        x1 = F.relu(x1)
+        x1 = self.fc2(x1)
+        x1 = F.relu(x1)
+
+        x2 = self.conv1(x2)
+        x2 = F.relu(x2)
+        x2 = self.conv2(x2)
+        x2 = torch.flatten(x2, 1)
+        x2 = self.fc1(x2)
+        x2 = F.relu(x2)
+        x2 = self.fc2(x2)
+        x2 = F.relu(x2)
+
+        x = torch.cat((x1, x2), 1)
+
+        output = self.fc3(x)
+        return output
+

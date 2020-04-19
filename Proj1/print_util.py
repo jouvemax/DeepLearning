@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 class Color:
     PURPLE = '\033[95m'
     CYAN = '\033[96m'
@@ -37,4 +39,39 @@ def log_acc_loss(e, nb_epoch, time, train_loss, train_acc, test_loss, test_acc, 
           '{0:.4f}'.format(test_acc).ljust(20) +
           Color.END,
           end='\n' if persistent else '')
+
+
+def plot_acc_loss(train_accuracies, train_losses, test_accuracies, test_losses):
+    n = len(train_accuracies)
+    major_ticks = list(range(0, n, 10))
+    minor_ticks = list(range(0, n, 1))
+
+    fig, axs = plt.subplots(2, dpi=240, figsize=(15, 12))
+    axs[0].plot(train_accuracies, color='Blue')
+    axs[0].plot(test_accuracies, color='Red')
+    axs[0].set_title("Accuracy")
+    axs[0].set(xlabel='Training epochs', ylabel='Accuracy (%)')
+    axs[0].grid()
+    axs[0].legend(['Train set', 'Test set'])
+    axs[0].set_xlim(left=0)
+    axs[0].set_xlim(right=n - 1)
+    axs[0].set_xticks(major_ticks)
+    axs[0].set_xticks(minor_ticks, minor=True)
+    axs[0].grid(which='minor', alpha=0.3)
+    axs[0].grid(which='major', alpha=0.7)
+
+    axs[1].plot(train_losses, color='Blue')
+    axs[1].plot(test_losses, color='Red')
+    axs[1].set_title("Cross-Entropy Loss")
+    axs[1].set(xlabel='Training epochs', ylabel='Loss')
+    axs[1].grid()
+    axs[1].legend(['Train set', 'Test set'])
+    axs[1].set_xticks(major_ticks)
+    axs[1].set_xticks(minor_ticks, minor=True)
+    axs[1].grid(which='minor', alpha=0.3)
+    axs[1].grid(which='major', alpha=0.7)
+    axs[1].set_xlim(left=0)
+    axs[1].set_xlim(right=n - 1)
+    plt.show()
+
 
