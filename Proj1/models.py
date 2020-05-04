@@ -87,7 +87,8 @@ class DigitNetwork(nn.Module):  # This network tries to predict a singel digit
         x = F.relu(x)
         x = self.fc2(x)
         return x
-        
+
+    
 class SiameseNetwork2(nn.Module):
     def __init__(self):
         super(SiameseNetwork2, self).__init__()
