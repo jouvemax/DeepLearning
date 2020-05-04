@@ -21,6 +21,98 @@ class BaselineNetwork(nn.Module):
         x = self.fc2(x)
         return x
 
+class Net2(nn.Module):
+    def __init__(self, aux_loss = False):
+        
+        super(Net2, self).__init__()
+        self.aux_loss = aux_loss
+        
+        self.conv1 = nn.Conv2d(2, 32, 3, 1)
+        self.conv2 = nn.Conv2d(32, 64, 3, 1)
+        self.conv3 = nn.Conv2d(64, 128, 3, 1)
+        self.fc1 = nn.Linear(2 * 1024, 128)
+        self.fc2 = nn.Linear(128, 2)
+        
+        if self.aux_loss:
+            self.fc1_aux = nn.Linear(1600, 128)
+            self.fc2_aux = nn.Linear(128, 2)
+
+    def forward(self, x):
+        x = self.conv1(x)
+        x = F.relu(x)
+        x = self.conv2(x)
+        x = F.relu(x)
+        
+        if self.aux_loss:
+            x_aux = F.max_pool2d(x, 2)
+            x_aux = torch.flatten(x_aux, 1)
+            x_aux = self.fc1_aux(x_aux)
+            x_aux = F.relu(x_aux)
+            x_aux = self.fc2_aux(x_aux)
+            output_aux = F.softmax(x_aux, dim = 1)
+            
+        x = self.conv3(x)
+        x = F.relu(x)
+        x = F.max_pool2d(x, 2)
+        x = torch.flatten(x, 1)
+        x = self.fc1(x)
+        x = F.relu(x)
+        x = self.fc2(x)
+        output = F.softmax(x, dim=1)
+        
+        if self.aux_loss:
+            return output, output_aux
+        else:
+            return output
+
+
+class Net3(nn.Module):
+    def __init__(self, aux_loss = False):
+        
+        super(Net3, self).__init__()
+        self.aux_loss = aux_loss
+        
+        self.conv1 = nn.Conv2d(2, 32, 3, 1)
+        self.conv2 = nn.Conv2d(32, 32, 3, 1)
+        self.conv3 = nn.Conv2d(32, 64, 3, 1)
+        self.conv4 = nn.Conv2d(64, 128, 3, 1)
+        self.fc1 = nn.Linear(2 * 576, 128)
+        self.fc2 = nn.Linear(128, 2)
+        
+        if self.aux_loss:
+            self.fc1_aux = nn.Linear(800, 128)
+            self.fc2_aux = nn.Linear(128, 2)
+
+    def forward(self, x):
+        x = self.conv1(x)
+        x = F.relu(x)
+        x = self.conv2(x)
+        x = F.relu(x)
+        
+        if self.aux_loss:
+            x_aux = F.max_pool2d(x, 2)
+            x_aux = torch.flatten(x_aux, 1)
+            x_aux = self.fc1_aux(x_aux)
+            x_aux = F.relu(x_aux)
+            x_aux = self.fc2_aux(x_aux)
+            output_aux = F.softmax(x_aux, dim = 1)
+            
+        x = self.conv3(x)
+        x = F.relu(x)
+        x = self.conv4(x)
+        x = F.relu(x)
+        x = F.max_pool2d(x, 2)
+        x = torch.flatten(x, 1)
+        x = self.fc1(x)
+        x = F.relu(x)
+        x = self.fc2(x)
+        output = F.softmax(x, dim=1)
+        
+        if self.aux_loss:
+            return output, output_aux
+        else:
+            return output
+
 
 class BaselineNetwork2(nn.Module):
     def __init__(self):
