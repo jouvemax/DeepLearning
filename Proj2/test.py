@@ -11,7 +11,7 @@ model = Sequential(Linear(2,25), ReLU(), Linear(25,25),
 criterion = LossMSE()
 
 #train the model
-train_model(model, criterion, train_input, train_target, 1000, 
+train_model(model, criterion, train_input, train_target, 3000, 
                 100, 0.01, logging=True)
 
 #evaluate the model
