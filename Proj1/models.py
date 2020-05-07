@@ -20,6 +20,18 @@ class BaselineNetwork(nn.Module):
         x = F.relu(x)
         x = self.fc2(x)
         return x
+    
+    
+class BaselineNetwork2(nn.Module):
+    def __init__(self):
+        super(BaselineNetwork2, self).__init__()
+        self.fc1 = nn.Linear(2 * 14 * 14, 2)
+
+    def forward(self, x):
+        x = torch.flatten(x, 1)
+        x = self.fc1(x)
+        return x
+    
 
 class Net2(nn.Module):
     def __init__(self, aux_loss = False):
@@ -114,66 +126,80 @@ class Net3(nn.Module):
             return output
 
 
-class BaselineNetwork2(nn.Module):
-    def __init__(self):
-        super(BaselineNetwork2, self).__init__()
-        self.fc1 = nn.Linear(2 * 14 * 14, 2)
-
-    def forward(self, x):
-        x = torch.flatten(x, 1)
-        x = self.fc1(x)
-        return x
 
 
-class SiameseNetwork(nn.Module):
-    def __init__(self):
-        super(SiameseNetwork, self).__init__()
-        self.conv1 = nn.Conv2d(1, 16 * 1, 2, 1)  # 2 input channels (one for each digit image), each is 14 x 14
-        self.conv2 = nn.Conv2d(16 * 1, 32 * 1, 2, 1)  # 32 input channels, each is 13 x 13
-        self.fc1 = nn.Linear(32 * 1 * 12 * 12, 64)
-        self.fc2 = nn.Linear(64, 10)
-        self.fc3 = nn.Linear(10 * 2, 2, bias=False)
-
-    def forward(self, x):
-        x1 = x[:, 0:1, :, :]
-        x2 = x[:, 1:2, :, :]
-
-        x1 = self.conv1(x1)
-        x1 = F.relu(x1)
-        x1 = self.conv2(x1)
-        x1 = torch.flatten(x1, 1)
-        x1 = self.fc1(x1)
-        x1 = F.relu(x1)
-        x1 = self.fc2(x1)
-        x1 = F.relu(x1)
-
-        x2 = self.conv1(x2)
-        x2 = F.relu(x2)
-        x2 = self.conv2(x2)
-        x2 = torch.flatten(x2, 1)
-        x2 = self.fc1(x2)
-        x2 = F.relu(x2)
-        x2 = self.fc2(x2)
-        x2 = F.relu(x2)
-
-        x = torch.cat((x1, x2), 1)
-
-        output = self.fc3(x)
-        return output
     
-    
-class DigitNetwork(nn.Module):  # This network tries to predict a singel digit
-    def __init__(self):
-        super(DigitNetwork, self).__init__()
-        self.conv1 = nn.Conv2d(1, 16 * 1, 2, 1)  # 2 input channels (one for each digit image), each is 14 x 14
-        self.conv2 = nn.Conv2d(16 * 1, 32 * 1, 2, 1)  # 32 input channels, each is 13 x 13
-        self.fc1 = nn.Linear(32 * 1 * 12 * 12, 64)
+class DigitNetwork_2conv(nn.Module):  # This network tries to predict a single digit
+    def __init__(self, dropout=False):
+        super(DigitNetwork_2conv, self).__init__()
+        self.conv1 = nn.Conv2d(1, 16, 2, 1)  # 1 input channel 14 x 14
+        self.conv2 = nn.Conv2d(16, 32, 2, 1)  # 16 input channels, each is 13 x 13
+        self.fc1 = nn.Linear(32 * 12 * 12, 64)
         self.fc2 = nn.Linear(64, 10)
+        self.dropout = dropout
         
     def forward(self, x):
         x = self.conv1(x)
         x = F.relu(x)
+        if self.dropout: x = F.dropout2d(x, 0.25)
         x = self.conv2(x)
+        x = torch.flatten(x, 1)
+        if self.dropout: x = F.dropout2d(x, 0.25)
+        x = self.fc1(x)
+        x = F.relu(x)
+        x = self.fc2(x)
+        return x
+    
+    
+class DigitNetwork_3conv(nn.Module):  # This network tries to predict a single digit
+    def __init__(self, dropout=False):
+        super(DigitNetwork_3conv, self).__init__()
+        self.conv1 = nn.Conv2d(1, 16, 2, 1)  # 1 input channel  14 x 14
+        self.conv2 = nn.Conv2d(16, 32, 2, 1)  # 16 input channels, each is 13 x 13
+        self.conv3 = nn.Conv2d(32, 64, 2, 1)  # 32 input channels, each is 12 x 12
+        self.fc1 = nn.Linear(64 * 11 * 11, 64)
+        self.fc2 = nn.Linear(64, 10)
+        self.dropout = dropout
+        
+    def forward(self, x):
+        x = self.conv1(x)
+        x = F.relu(x)
+        if self.dropout: x = F.dropout2d(x, 0.25)
+        x = self.conv2(x)
+        if self.dropout: x = F.dropout2d(x, 0.25)
+        x = F.relu(x)
+        x = self.conv3(x)
+        if self.dropout: x = F.dropout2d(x, 0.25)
+        x = torch.flatten(x, 1)
+        x = self.fc1(x)
+        x = F.relu(x)
+        x = self.fc2(x)
+        return x
+    
+
+class DigitNetwork_4conv(nn.Module):  # This network tries to predict a single digit
+    def __init__(self, dropout=False):
+        super(DigitNetwork_4conv, self).__init__()
+        self.conv1 = nn.Conv2d(1, 16, 2, 1)  # 1 input channel  14 x 14
+        self.conv2 = nn.Conv2d(16, 32, 2, 1)  # 16 input channels, each is 13 x 13
+        self.conv3 = nn.Conv2d(32, 64, 2, 1)  # 32 input channels, each is 12 x 12
+        self.conv4 = nn.Conv2d(64, 128, 2, 1)  # 64 input channels, each is 11 x 11
+        self.fc1 = nn.Linear(128 * 10 * 10, 64)
+        self.fc2 = nn.Linear(64, 10)
+        self.dropout = dropout
+        
+    def forward(self, x):
+        x = self.conv1(x)
+        x = F.relu(x)
+        if self.dropout: x = F.dropout2d(x, 0.25)
+        x = self.conv2(x)
+        if self.dropout: x = F.dropout2d(x, 0.25)
+        x = F.relu(x)
+        x = self.conv3(x)
+        if self.dropout: x = F.dropout2d(x, 0.25)
+        x = F.relu(x)
+        x = self.conv4(x)
+        if self.dropout: x = F.dropout2d(x, 0.25)
         x = torch.flatten(x, 1)
         x = self.fc1(x)
         x = F.relu(x)
@@ -181,15 +207,34 @@ class DigitNetwork(nn.Module):  # This network tries to predict a singel digit
         return x
 
     
-class SiameseNetwork2(nn.Module):
-    def __init__(self):
-        super(SiameseNetwork2, self).__init__()
-        self.digit = DigitNetwork()
-        self.fc3 = nn.Linear(10 * 2, 2, bias=False)
+class SiameseNetwork(nn.Module):
+    def __init__(self, nb_conv, dropout=False, final_bias=False):
+        super(SiameseNetwork, self).__init__()
+        
+        if nb_conv == 2:
+            self.digit = DigitNetwork_2conv(dropout=dropout)
+        elif nb_conv == 3:
+            self.digit = DigitNetwork_3conv(dropout=dropout)
+        elif nb_conv == 4:
+            self.digit = DigitNetwork_4conv(dropout=dropout)
+        else:
+            print("ERROR: number of conv layers not supported (use 2, 3 or 4)")
+
+        self.fc = nn.Linear(10 * 2, 2, bias=final_bias)
         
     def digit_pred(self, x):
         x = self.digit(x)
         return x
+    
+    # Either freeze or unfreeze the learning of the digit prediction part
+    def digit_pred_req_grad(self, requires_grad):
+        for param in self.digit.parameters():
+            param.requires_grad = requires_grad
+            
+    # Either freeze or unfreeze the learning of the digit comparison part
+    def digit_comp_req_grad(self, requires_grad):
+        for param in self.fc.parameters():
+            param.requires_grad = requires_grad
         
     def forward(self, x):
         x1 = x[:, 0:1, :, :]
@@ -202,6 +247,6 @@ class SiameseNetwork2(nn.Module):
         
         x = torch.cat((x1, x2), 1)
 
-        output = self.fc3(x)
+        output = self.fc(x)
         return output
 

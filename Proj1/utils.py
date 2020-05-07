@@ -2,7 +2,6 @@ from dlc_practical_prologue import generate_pair_sets
 import torch
 
 def generate_data_device(n, device='cpu'):
-
     train_input, train_target, train_classes, test_input, test_target, test_classes = generate_pair_sets(n)
     train_input = train_input.to(device=device)
     train_target = train_target.to(device=device)
@@ -10,12 +9,15 @@ def generate_data_device(n, device='cpu'):
     test_input = test_input.to(device=device)
     test_target = test_target.to(device=device)
     test_classes = test_classes.to(device=device)
-
     return train_input, train_target, train_classes, test_input, test_target, test_classes
 
 def normalize_data(tensor):
-
     mu, std = tensor.mean(), tensor.std()
     tmp = tensor.sub(mu).div(std)
-
     return tmp
+
+def separate_channels(x):
+    x1 = x[:, 0:1, :, :]
+    x2 = x[:, 1:2, :, :]
+    return x1, x2
+
