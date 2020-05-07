@@ -31,7 +31,10 @@ class Linear(Module):
         Returns:
         output -- tensor of size (N, *, out_features)
         """
-        
+        if (input.size(-1) != self.in_features):
+            print(input.size(-1))
+            print(self.in_features)
+            print(self.out_features)
         assert(input.size(-1) == self.in_features)
         
         

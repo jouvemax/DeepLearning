@@ -150,7 +150,7 @@ def train_model(model, criterion, train_input, train_target, nb_epoch,
 def generate_disk_data(nb_points = 1000, radius = 1/(math.sqrt(2*math.pi))):
     """
     Generates a training and a test set of "nb_points" points 
-    sampled uniformly in [0, 1]^2 , each with a
+    sampled uniformly in [-1, 1]^2 , each with a
     label, 0 if outside the disk of radius "radius" and 1 if inside.
     
     Args:
@@ -163,8 +163,8 @@ def generate_disk_data(nb_points = 1000, radius = 1/(math.sqrt(2*math.pi))):
     """
     
     N = nb_points  
-    train_input = empty(N,2).uniform_(0,1)
-    test_input = empty(N,2).uniform_(0,1)
+    train_input = empty(N,2).uniform_(-1,1)
+    test_input = empty(N,2).uniform_(-1,1)
     
     train_target = ((train_input[:,0]**2 + train_input[:,1]**2) < radius**2).long()
     test_target = ((test_input[:,0]**2 + test_input[:,1]**2) < radius**2).long()
@@ -197,6 +197,5 @@ def plot_classifier(model, train_input, train_target, show=True):
     plt.scatter(train_input[:N, 0], train_input[0:N, 1], c=train_target[0:N], s=40, cmap=plt.cm.Spectral)
     plt.xlim(xx.min(), xx.max())
     plt.ylim(yy.min(), yy.max())
-    plt.savefig("classifier.png")
     if show==True:
         plt.show()
