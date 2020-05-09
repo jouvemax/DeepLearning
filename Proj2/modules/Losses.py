@@ -5,12 +5,12 @@ class LossMSE(Module):
     
     def forward(self, input, target):
         """
-        Compute the mean square error loss between 
+        Computes the mean square error loss between 
         the input tensor and the target tensor.
 
         Args:
-        input -- tensor of size (N, *)
-        target -- tensor of size (N, *)
+        input -- tensor of size (N, D)
+        target -- tensor of size (N, D)
 
         Returns:
         loss -- mse loss between input and target
@@ -53,7 +53,7 @@ class LossCrossEntropy(Module):
         the input tensor and the target tensor.
 
         Args:
-        input -- tensor of size (N, *)
+        input -- tensor of size (N, D)
         target -- tensor of size (N, 1)
 
         Returns:
@@ -76,7 +76,7 @@ class LossCrossEntropy(Module):
         the input tensor.
         
         Args:
-        input -- tensor of size (N, *)
+        input -- tensor of size (N, D)
         target -- tensor of size (N, 1)
     
         Returns:
@@ -93,8 +93,10 @@ class LossCrossEntropy(Module):
        
         grad_target = -1/N * (sum-target_exp) / sum
         
-        for idx,idy in enumerate(target):
-            grad[idx,idy.item()] = grad_target[idx]
+        grad[range(len(grad)), target] = grad_target
+        
+        #for idx,idy in enumerate(target):
+        #    grad[idx,idy.item()] = grad_target[idx]
             
         assert(grad.size() == input.size())
         return grad

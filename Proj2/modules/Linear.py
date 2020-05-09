@@ -26,15 +26,12 @@ class Linear(Module):
         Forwards the input data by applying a linear transformation on it.
         
         Args:
-        input -- tensor of size (N, *, in_features)
+        input -- tensor of size (N, in_features)
         
         Returns:
-        output -- tensor of size (N, *, out_features)
+        output -- tensor of size (N, out_features)
         """
-        if (input.size(-1) != self.in_features):
-            print(input.size(-1))
-            print(self.in_features)
-            print(self.out_features)
+
         assert(input.size(-1) == self.in_features)
         
         
@@ -58,10 +55,10 @@ class Linear(Module):
         the parameters of the layer.
         
         Args:
-        grad_output -- tensor of size (N, *, out_features)
+        grad_output -- tensor of size (N, out_features)
         
         Returns 
-        grad_input -- tensor of size (N, * , in_features)
+        grad_input -- tensor of size (N, in_features)
         """
 
         assert(grad_output.size(-1) == self.out_features)
@@ -103,7 +100,7 @@ class Linear(Module):
 
     def update_params(self, step_size):
         """
-        Update the parameters of the linear layer by going 
+        Updates the parameters of the linear layer by going 
         in the opposite direction of the gradient.
         
         Args:

@@ -68,7 +68,7 @@ def evaluate_model(model, input, target, logging=False):
     fscore = f_score(prediction, target)
     if logging:
         print("Accuracy: {0}".format(acc))
-        print("F-score: {0}".format(fscore))
+        print("F1 score: {0:.4f}".format(fscore))
     return acc, fscore
 
 def train_model(model, criterion, train_input, train_target, nb_epoch, 
@@ -85,7 +85,7 @@ def train_model(model, criterion, train_input, train_target, nb_epoch,
     nb_eboch -- number of eboch 
     batch_size -- size of the mini batch
     step_size -- size of the step took by sgd at each iteration
-    logging -- wether or not to print on the console the evolution of the training
+    logging -- whether or not to print on the console the evolution of the training
     
     Returns:
     accuracy -- the accuracy of the model on the training data
@@ -95,6 +95,8 @@ def train_model(model, criterion, train_input, train_target, nb_epoch,
     train_target_ = train_target.clone()
     # if the criterion is LossMSE, the train_target should be of same size
     # as the output of the model i.e. (N, 2) in the case of the Disk.
+    # but train_target is expected to represent the target class for each input
+    # and thus have a size of (N,1)
     if type(criterion) == LossMSE:
         temp = empty(size=(train_target.size(0), 2))
         for idx in range(temp.size(0)):
@@ -141,8 +143,8 @@ def train_model(model, criterion, train_input, train_target, nb_epoch,
             elapsed_time = time.time() - start_time
             log_acc_loss(e, nb_epoch, elapsed_time, train_loss, train_acc, train_fscore, persistent=False)
         
-    print()
     if logging:
+        print()
         print("On train set:")
     acc, fscore = evaluate_model(model, train_input, train_target_, logging=logging)
     return acc, fscore
@@ -171,13 +173,14 @@ def generate_disk_data(nb_points = 1000, radius = 1/(math.sqrt(2*math.pi))):
     return train_input, train_target, test_input, test_target
 
 
-def plot_classifier(model, train_input, train_target, show=True):
+def plot_classifier(model, train_input, train_target, save_name="classifier.png"):
     """
     Plot the classifier defined by the model
     
     Args:
     train_input -- tensor of input points
     train_target -- tensor of target labels
+    save_name -- where to store the plot
     """
     h = 0.02
     x_min, x_max = train_input[:, 0].min(), train_input[:, 0].max()
@@ -197,5 +200,5 @@ def plot_classifier(model, train_input, train_target, show=True):
     plt.scatter(train_input[:N, 0], train_input[0:N, 1], c=train_target[0:N], s=40, cmap=plt.cm.Spectral)
     plt.xlim(xx.min(), xx.max())
     plt.ylim(yy.min(), yy.max())
-    if show==True:
-        plt.show()
+    plt.savefig(save_name)
+    plt.show()

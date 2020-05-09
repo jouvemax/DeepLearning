@@ -19,7 +19,7 @@ class Color:
 
 def log_acc_loss_header(color=''):
     print(color + 'Epoch'.ljust(12) + 'Time'.ljust(8) + 'Train loss'.ljust(15) +
-          'Train accuracy'.ljust(20) + 'Train f-score'.ljust(15) + Color.END)
+          'Train accuracy'.ljust(20) + 'Train F1 score'.ljust(15) + Color.END)
 
 def log_acc_loss(e, nb_epoch, time, train_loss, train_acc, train_f, color='', persistent=True):
     print('\r' + color +

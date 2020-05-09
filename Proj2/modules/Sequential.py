@@ -1,7 +1,7 @@
 from modules import Module
 
 class Sequential(Module):
-    """Class reprensing a neural network composed of several modules"""
+    """Class representing a neural network composed of several modules"""
     
     def __init__(self, *modules):
         self.modules = list(modules)
@@ -12,10 +12,10 @@ class Sequential(Module):
         Computes the output of the neural network given some input.
         
         Args:
-        input -- tensor of size (N, *, i), i = in_features of the first layer of the nn.
+        input -- tensor of size (N, i), i = in_features of the first layer of the nn.
         
         Returns:
-        output -- tensor of size (N, *, o), o = out_features of the last layer of the nn.
+        output -- tensor of size (N, o), o = out_features of the last layer of the nn.
         """
         output = input
         for module in self.modules:
@@ -65,7 +65,7 @@ class Sequential(Module):
 
     def update_params(self, step_size):
         """
-        Update the parameters of the nn going 
+        Updates the parameters of the nn going 
         in the opposite direction of the gradient.
         
         Args:
