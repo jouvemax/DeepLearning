@@ -11,8 +11,8 @@ model = Sequential(Linear(2,25), ReLU(), Linear(25,25),
 criterion = LossMSE()
 
 #train the model
-train_model(model, criterion, train_input, train_target, 3000, 
-                100, 0.01, logging=True)
+train_model(model, criterion, train_input, train_target, 2000, 
+                100, 0.03, logging=True)
 
 #evaluate the model
 print("On test set:")
