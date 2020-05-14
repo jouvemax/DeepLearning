@@ -126,25 +126,6 @@ def evaluate_model(model, nb_rounds, criterion, device, batch_size, nb_epoch, op
     return torch.FloatTensor(accuracies)
 
 
-def split_train_validation(train_input, train_target, train_classes, validation_proportion = 0.2):
-    
-    index_permutation = torch.randperm(train_input.size(0))
-    split = int(0.2 * train_input.size(0))
-
-    validation_index = index_permutation[:split]
-    training_index = index_permutation[split:]
-
-    validation_input = train_input[validation_index]
-    validation_target = train_target[validation_index]
-    validation_classes = train_classes[validation_index]
-
-    train_input = train_input[training_index]
-    train_target = train_target[training_index]
-    train_classes = train_classes[training_index]
-    
-    return train_input, train_target, train_classes, validation_input, validation_target, validation_classes
-
-
 def cross_validation(model_untrained, K, train_input, train_target, train_classes, device, batch_size, nb_epoch, aux_loss_alphas):
     
     
