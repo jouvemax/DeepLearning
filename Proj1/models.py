@@ -6,8 +6,8 @@ import torch.nn.functional as F
 class BaselineNetwork(nn.Module):
     def __init__(self):
         super(BaselineNetwork, self).__init__()
-        self.conv1 = nn.Conv2d(2, 16 * 2, 3, 1)  # 2 input channels (one for each digit image), each is 14 x 14
-        self.conv2 = nn.Conv2d(16 * 2, 32 * 2, 3, 1)  # 32 input channels, each is 13 x 13
+        self.conv1 = nn.Conv2d(2, 16 * 2, 3, 1)
+        self.conv2 = nn.Conv2d(16 * 2, 32 * 2, 3, 1)
         self.fc1 = nn.Linear(32 * 2 * 5 * 5, 128)
         self.fc2 = nn.Linear(128, 2)
 
@@ -24,7 +24,7 @@ class BaselineNetwork(nn.Module):
         return x
     
 
-class Net2(nn.Module):
+class Net2(nn.Module): # We can either use this network with an auxiliary loss or without
     def __init__(self, aux_loss = False):
         
         super(Net2, self).__init__()
@@ -69,7 +69,7 @@ class Net2(nn.Module):
             return output
 
 
-class Net3(nn.Module):
+class Net3(nn.Module): # We can either use this network with an auxiliary loss or without
     def __init__(self, aux_loss = False):
         
         super(Net3, self).__init__()

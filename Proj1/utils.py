@@ -3,6 +3,9 @@ import torch
 import matplotlib.pyplot as plt
 
 def generate_data_device(n, device='cpu'):
+    """
+    Generates the data for the project and send it to the device passed as argument
+    """
     train_input, train_target, train_classes, test_input, test_target, test_classes = generate_pair_sets(n)
     train_input = train_input.to(device=device)
     train_target = train_target.to(device=device)
@@ -13,17 +16,25 @@ def generate_data_device(n, device='cpu'):
     return train_input, train_target, train_classes, test_input, test_target, test_classes
 
 def normalize_data(tensor):
+    """
+    Normalizes the tensor passed as argument
+    """
     mu, std = tensor.mean(), tensor.std()
     tmp = tensor.sub(mu).div(std)
     return tmp
 
 def separate_channels(x):
+    """
+    Separates the two channel of the tensor passed as argument into two different tensors
+    """
     x1 = x[:, 0:1, :, :]
     x2 = x[:, 1:2, :, :]
     return x1, x2
 
 def split_train_validation(train_input, train_target, train_classes, validation_proportion = 0.2):
-    
+    """
+    Splits the train tensors passed as argument into new train and validations tensors with 'validation_proportion' of the data
+    """
     index_permutation = torch.randperm(train_input.size(0))
     split = int(0.2 * train_input.size(0))
 
@@ -56,6 +67,9 @@ class Color:
 
 
 def print_test(b, batch_length, batch_time, loss, top1, persistent=True, color='', title='Test'):
+    """
+    Prints the results when testing
+    """
     print('\r' + color + title.ljust(14) +
           '[{0}/{1}]'.format(b+1, batch_length).ljust(14) +
           '{batch_time.sum:.0f}s'.format(batch_time=batch_time).ljust(7) +
@@ -65,6 +79,9 @@ def print_test(b, batch_length, batch_time, loss, top1, persistent=True, color='
 
 
 def log_acc_loss_header(color='', aux=False):
+    """
+    Prints the accuracy and loss header
+    """
     if aux:
         print(color + 'Epoch'.ljust(12) + 'Time'.ljust(8) + 'Train loss'.ljust(15) +
           'Train acc'.ljust(15) + 'Train digit acc'.ljust(20) + 
@@ -75,6 +92,9 @@ def log_acc_loss_header(color='', aux=False):
 
 
 def log_acc_loss(e, nb_epoch, time, train_loss, train_acc, test_loss, test_acc, color='', persistent=True):
+    """
+    Prints the information related to training
+    """
     print('\r' + color +
           '[{0}/{1}]'.format(e + 1, nb_epoch).ljust(12) +
           '{time:.0f}s'.format(time=time).ljust(8) +
@@ -87,6 +107,9 @@ def log_acc_loss(e, nb_epoch, time, train_loss, train_acc, test_loss, test_acc, 
     
     
 def log_acc_loss_aux(e, nb_epoch, time, train_loss, train_acc, train_digit_acc, test_loss, test_acc, test_digit_acc, color='', persistent=True):
+    """
+    Prints the information related to training with auxiliary loss
+    """
     print('\r' + color +
           '[{0}/{1}]'.format(e + 1, nb_epoch).ljust(12) +
           '{time:.0f}s'.format(time=time).ljust(8) +
@@ -101,10 +124,16 @@ def log_acc_loss_aux(e, nb_epoch, time, train_loss, train_acc, train_digit_acc, 
     
     
 def log_evaluate_header(color=''):
+    """
+    Prints header when evaluating
+    """
     print(color + 'Round'.ljust(12) + "Test accuracy".ljust(20) + "Test loss".ljust(15) + Color.END)
     
     
 def log_evaluate(r, nb_round, test_acc, test_loss, color='', persistent=True):
+    """
+    Prints the result when evaluating
+    """
     print('\r' + color + '[{0}/{1}]'.format(r + 1, nb_round).ljust(12) +
           '{0:.4f}'.format(test_acc).ljust(20) + 
           '{0:.4f}'.format(test_loss).ljust(15) +
@@ -113,6 +142,9 @@ def log_evaluate(r, nb_round, test_acc, test_loss, color='', persistent=True):
 
 
 def plot_acc_loss(train_accuracies, train_losses, test_accuracies, test_losses):
+    """
+    Plots the training results
+    """
     n = len(train_accuracies)
     major_ticks = list(range(0, n, 10))
     minor_ticks = list(range(0, n, 1))
@@ -147,6 +179,9 @@ def plot_acc_loss(train_accuracies, train_losses, test_accuracies, test_losses):
     
 
 def plot_acc_loss_aux(train_accuracies, train_digit_accuracies, train_losses, test_accuracies, test_digit_accuracies, test_losses):
+    """
+    Plots the training results with additional data coming from auxiliary outputs
+    """
     n = len(train_accuracies)
     major_ticks = list(range(0, n, 10))
     minor_ticks = list(range(0, n, 1))

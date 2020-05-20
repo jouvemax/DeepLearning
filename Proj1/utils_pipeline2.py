@@ -4,6 +4,9 @@ import torch.nn as nn
 import time
 
 def test(test_input, test_target, test_classes, model, criterion, batch_size, aux_loss_alpha=0.0):
+    """
+    This method tests the model passed as argument on the testing data
+    """
     model.eval()  # Switch to eval mode in case we use an architecture that requires it
     with torch.no_grad():
         nb_final_errors = 0
@@ -45,6 +48,9 @@ def test(test_input, test_target, test_classes, model, criterion, batch_size, au
     
 def train_model(model, train_input, train_target, train_classes, test_input, test_target, test_classes,
                 nb_epochs, batch_size, optimizer_params, logging = False, aux_loss_alpha=0.0):
+    """
+    This method is used to train the model passed as argument
+    """
     lr, momentum, weight_decay, gamma = optimizer_params['lr'], optimizer_params['momentum'], optimizer_params['weight_decay'], optimizer_params['gamma']    
     optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=gamma)
@@ -102,6 +108,9 @@ def train_model(model, train_input, train_target, train_classes, test_input, tes
     
 
 def evaluate_model(architecture, nb_conv, aux_loss_alpha, nb_rounds, criterion, nb_epochs, batch_size, optimizer_params, device):
+    """
+    This method is used to evaluate the model passed as argument
+    """
     accuracies = []
     log_evaluate_header(color=Color.GREEN)
     
@@ -127,6 +136,9 @@ def evaluate_model(architecture, nb_conv, aux_loss_alpha, nb_rounds, criterion, 
 
 
 def cross_validation(architecture, K, train_input, train_target, train_classes, device, batch_size, nb_epoch, aux_loss_alphas, optimizer_params):
+    """
+    This methods performs a cross validation and returns the best alpha used with auxiliary loss
+    """
     best_alpha = None
     best_accuracy = -1
     

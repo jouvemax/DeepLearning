@@ -5,7 +5,9 @@ from utils import *
 import time
 
 def test(test_input, test_target, test_classes, model, criterion, batch_size, with_aux_loss = False, aux_loss_alpha = 0.5):
-    
+    """
+    This methods is used for testing the model given as input on the testing data
+    """
     with torch.no_grad():
         nb_data_errors = 0
         loss_sum = 0
@@ -36,10 +38,11 @@ def test(test_input, test_target, test_classes, model, criterion, batch_size, wi
 
 
 def train_model(model, train_input, train_target, train_classes, test_input, test_target, test_classes, nb_epoch, batch_size, optimizer_params, logging = False, with_aux_loss = False, aux_loss_alpha = 0.5):
-    
+    """
+    This methods is used for training the model given as input
+    """
     nb_epoch, batch_size = nb_epoch, batch_size
-    lr, momentum, weight_decay, gamma = optimizer_params['lr'], optimizer_params['momentum'], optimizer_params['weight_decay'], optimizer_params['gamma'] 
-#     optimizer = torch.optim.Adam(model.parameters()) #, lr=lr, momentum=momentum, weight_decay=weight_decay)
+    lr, momentum, weight_decay, gamma = optimizer_params['lr'], optimizer_params['momentum'], optimizer_params['weight_decay'], optimizer_params['gamma']
     optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=gamma)
     criterion = nn.CrossEntropyLoss()
@@ -92,7 +95,9 @@ def train_model(model, train_input, train_target, train_classes, test_input, tes
 
 
 def evaluate_model(model, nb_rounds, criterion, device, batch_size, nb_epoch, optimizer_params, model_params = None, with_aux_loss = False, aux_loss_alpha = 0.5):
-    
+    """
+    This method is used to evaluate the model passed as argument
+    """
     accuracies = []
     
     for round in range(nb_rounds):
@@ -126,8 +131,9 @@ def evaluate_model(model, nb_rounds, criterion, device, batch_size, nb_epoch, op
 
 
 def cross_validation(model_untrained, K, train_input, train_target, train_classes, device, batch_size, nb_epoch, aux_loss_alphas):
-    
-    
+    """
+    This methods perform a cross validation and returns the optimal alpha used for auxiliary loss
+    """
     best_alpha = None
     best_accuracy = -1
     
