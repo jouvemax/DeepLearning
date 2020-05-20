@@ -232,9 +232,9 @@ class SiameseNetwork(nn.Module):
         x2 = x[:, 1:2, :, :]
 
         x1 = self.digit_pred(x1)
-        x1 = F.relu(x1)
+        x1 = F.softmax(x1, dim=1)
         x2 = self.digit_pred(x2)
-        x2 = F.relu(x2)
+        x2 = F.softmax(x2, dim=1)
         
         x = torch.cat((x1, x2), 1)
 
